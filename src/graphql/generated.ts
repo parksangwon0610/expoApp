@@ -1218,6 +1218,7 @@ export type Query = {
   users?: Maybe<Array<Maybe<UsersPermissionsUser>>>;
   usersConnection?: Maybe<UsersPermissionsUserConnection>;
   articleBySlug?: Maybe<Array<Maybe<Article>>>;
+  commentsInArticles?: Maybe<Array<Maybe<Comment>>>;
   me?: Maybe<UsersPermissionsMe>;
 };
 
@@ -1379,6 +1380,11 @@ export type QueryUsersConnectionArgs = {
 
 export type QueryArticleBySlugArgs = {
   slug?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryCommentsInArticlesArgs = {
+  id?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -1597,7 +1603,20 @@ export type GetArticlesQuery = (
   { __typename?: 'Query' }
   & { articles?: Maybe<Array<Maybe<(
     { __typename?: 'Article' }
-    & Pick<Article, 'id' | 'title'>
+    & Pick<Article, 'id' | 'title' | 'content'>
+  )>>> }
+);
+
+export type GetArticleCommentsQueryVariables = Exact<{
+  id?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetArticleCommentsQuery = (
+  { __typename?: 'Query' }
+  & { commentsInArticles?: Maybe<Array<Maybe<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, 'content'>
   )>>> }
 );
 
@@ -1652,6 +1671,7 @@ export const GetArticlesDocument = gql`
   articles {
     id
     title
+    content
   }
 }
     `;
@@ -1680,6 +1700,39 @@ export function useGetArticlesLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetArticlesQueryHookResult = ReturnType<typeof useGetArticlesQuery>;
 export type GetArticlesLazyQueryHookResult = ReturnType<typeof useGetArticlesLazyQuery>;
 export type GetArticlesQueryResult = Apollo.QueryResult<GetArticlesQuery, GetArticlesQueryVariables>;
+export const GetArticleCommentsDocument = gql`
+    query getArticleComments($id: String) {
+  commentsInArticles(id: $id) {
+    content
+  }
+}
+    `;
+
+/**
+ * __useGetArticleCommentsQuery__
+ *
+ * To run a query within a React component, call `useGetArticleCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetArticleCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetArticleCommentsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetArticleCommentsQuery(baseOptions?: Apollo.QueryHookOptions<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>) {
+        return Apollo.useQuery<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>(GetArticleCommentsDocument, baseOptions);
+      }
+export function useGetArticleCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>) {
+          return Apollo.useLazyQuery<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>(GetArticleCommentsDocument, baseOptions);
+        }
+export type GetArticleCommentsQueryHookResult = ReturnType<typeof useGetArticleCommentsQuery>;
+export type GetArticleCommentsLazyQueryHookResult = ReturnType<typeof useGetArticleCommentsLazyQuery>;
+export type GetArticleCommentsQueryResult = Apollo.QueryResult<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>;
 export const CreateArticleDocument = gql`
     mutation createArticle($input: createArticleInput) {
   createArticle(input: $input) {

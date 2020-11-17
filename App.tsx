@@ -29,6 +29,7 @@ function HomeScreen({navigation}) {
                 {/*<TouchableOpacity onPress={() => navigation.navigate('Articles')}>*/}
                 <Text style={styles.elementContainer}>Comments</Text>
                 {/*</TouchableOpacity>*/}
+                <ServerMessage/>
             </View>
             {/*<View>*/}
             {/*    <Button*/}

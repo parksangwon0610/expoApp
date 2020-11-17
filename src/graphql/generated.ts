@@ -1608,13 +1608,13 @@ export type GetArticlesQuery = (
 );
 
 export type GetArticleCommentsQueryVariables = Exact<{
-  id?: Maybe<Scalars['String']>;
+  articleId: Scalars['ID'];
 }>;
 
 
 export type GetArticleCommentsQuery = (
   { __typename?: 'Query' }
-  & { commentsInArticles?: Maybe<Array<Maybe<(
+  & { comments?: Maybe<Array<Maybe<(
     { __typename?: 'Comment' }
     & Pick<Comment, 'content'>
   )>>> }
@@ -1701,8 +1701,8 @@ export type GetArticlesQueryHookResult = ReturnType<typeof useGetArticlesQuery>;
 export type GetArticlesLazyQueryHookResult = ReturnType<typeof useGetArticlesLazyQuery>;
 export type GetArticlesQueryResult = Apollo.QueryResult<GetArticlesQuery, GetArticlesQueryVariables>;
 export const GetArticleCommentsDocument = gql`
-    query getArticleComments($id: String) {
-  commentsInArticles(id: $id) {
+    query getArticleComments($articleId: ID!) {
+  comments(where: {article: {id: $articleId}}) {
     content
   }
 }
@@ -1720,11 +1720,11 @@ export const GetArticleCommentsDocument = gql`
  * @example
  * const { data, loading, error } = useGetArticleCommentsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      articleId: // value for 'articleId'
  *   },
  * });
  */
-export function useGetArticleCommentsQuery(baseOptions?: Apollo.QueryHookOptions<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>) {
+export function useGetArticleCommentsQuery(baseOptions: Apollo.QueryHookOptions<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>) {
         return Apollo.useQuery<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>(GetArticleCommentsDocument, baseOptions);
       }
 export function useGetArticleCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetArticleCommentsQuery, GetArticleCommentsQueryVariables>) {

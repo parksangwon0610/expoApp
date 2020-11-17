@@ -1,9 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, TextInput, View} from "react-native";
+import {useIsFocused} from '@react-navigation/native';
 import {Text, Header, Button, Card, ListItem, Divider} from 'react-native-elements';
 
 import CommentList from '../comments/CommentList'
-import {useGetCommentsQuery, useGetArticleCommentsQuery, useAddMyCommentMutation} from "../../../src/graphql/generated";
+import {
+    useGetArticleCommentsQuery,
+    useGetArticleCommentsLazyQuery,
+    GetArticleCommentsQuery
+} from "../../../src/graphql/generated";
+import useFloatingHeaderHeight from "@react-navigation/stack/lib/typescript/src/utils/useHeaderHeight";
 // @ts-ignore
 const ArticleDetailScreen = ({route, navigation}) => {
     const {
@@ -11,6 +17,21 @@ const ArticleDetailScreen = ({route, navigation}) => {
         title,
         content
     } = route.params;
+    const isFocused = useIsFocused();
+    const [comments, setComments] = useState<GetArticleCommentsQuery>();
+    // const {data, error, loading} = useGetArticleCommentsQuery({
+    //     variables: {
+    //         articleId: id
+    //     }
+    // });
+    const [getActivityComments, {data, error, loading}] = useGetArticleCommentsLazyQuery({fetchPolicy: 'cache-and-network'});
+    useEffect(() => {
+       getActivityComments({
+           variables: {
+               articleId: id
+           }
+       })
+    }, [isFocused]);
 
     return (
         <View style={styles.container}>
@@ -22,7 +43,7 @@ const ArticleDetailScreen = ({route, navigation}) => {
             </View>
             <Divider style={{height:2}}/>
             <View>
-                <CommentList/>
+                <CommentList commentList={data}/>
             </View>
         </View>
     )

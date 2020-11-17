@@ -2,25 +2,44 @@ import React, {useState, useEffect} from 'react';
 import {Text, TouchableOpacity, View} from "react-native";
 
 import {
+    GetArticleCommentsQuery,
     useGetCommentsQuery
 } from '../../../src/graphql/generated'
 import {Avatar, ListItem} from "react-native-elements";
 import {useSubscription} from "@apollo/client";
 import gql from "graphql-tag";
+import ServerMessage from '../../components/ServerMessage'
+
 const MESSAGE_SUBSCRIPTION = gql`
     subscription onMessageAdded {
         messageAdded
     }
 `;
 // @ts-ignore
-const CommentList = () => {
-    const comments = useGetCommentsQuery();
-    const { loading, error, data } = useSubscription(MESSAGE_SUBSCRIPTION);
-    // comment 생성 이 들어오면 comments 에 추가
+interface commentListProps {
+    commentList: GetArticleCommentsQuery | undefined
+}
+const CommentList = (props: commentListProps) => {
+
+    // let comments = props.commentList?.comments; //useGetCommentsQuery();
+    const [getCommentList, setCommentList] = useState<any>([])
+    let { loading, error, data } = useSubscription(MESSAGE_SUBSCRIPTION);
+
+    useEffect(()=> {
+        // setCommentList(comments.data?.comments)
+        setCommentList(props.commentList?.comments);
+    },[props.commentList?.comments]);
+
+    useEffect(()=>{
+        if(data) {
+            setCommentList([...getCommentList, {content: data.messageAdded}]);
+        }
+    },[data]);
 
     const commentsRender = () => {
+        console.log('loading', loading);
         return (
-            comments?.data?.comments?.map((comment, index) => (
+            getCommentList?.map((comment, index) => (
                 <ListItem key={index} bottomDivider>
                     <TouchableOpacity>
                         <ListItem.Content>
@@ -35,6 +54,7 @@ const CommentList = () => {
     return (
         <View>
             {commentsRender()}
+
         </View>
     )
 };

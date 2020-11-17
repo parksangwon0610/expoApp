@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import { Header, Button, Card, ListItem } from 'react-native-elements';
+import {Header, Button, Card, ListItem} from 'react-native-elements';
 
 // components
 import DetailScreen from './Detail';
@@ -30,6 +30,7 @@ const ArticlesScreen = ({navigation}) => {
         })
     };
     // @ts-ignore
+    console.log('data >>. ', data);
     return (
         <View style={styles.container}>
             {
@@ -37,7 +38,8 @@ const ArticlesScreen = ({navigation}) => {
                     <ListItem key={index} bottomDivider>
                         <TouchableOpacity onPress={() => navigation.navigate('ArticleDetail', {...article})}>
                             <ListItem.Content>
-                                <ListItem.Title style={(article?.title) ? styles.title : styles.noFoundTitle }>{(article?.title) ? article?.title : 'No Title'}</ListItem.Title>
+                                <ListItem.Title
+                                    style={(article?.title) ? styles.title : styles.noFoundTitle}>{(article?.title) ? article?.title : 'No Title'}</ListItem.Title>
                                 <ListItem.Subtitle>{(article?.content) ? article?.content : 'No Content'}</ListItem.Subtitle>
                             </ListItem.Content>
                         </TouchableOpacity>
@@ -64,13 +66,12 @@ const ArticlesScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor:'white',
+        backgroundColor: 'white',
         paddingTop: '5%',
         paddingLeft: '5%',
         paddingRight: '5%'
     },
-    mainContainer: {
-    },
+    mainContainer: {},
     textInput: {
         borderWidth: 1,
     },

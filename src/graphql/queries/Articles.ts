@@ -10,15 +10,31 @@ export const GET_ARTICLES = gql`
     }
 `;
 
+// export const GET_ARTICLE_COMMENTS = gql`
+//     query getArticleComments ($id: String) {
+//         commentsInArticles(
+//             id: $id
+//         ) {
+//             content
+//         }
+//     }
+// `
 export const GET_ARTICLE_COMMENTS = gql`
-    query getArticleComments ($id: String) {
-        commentsInArticles(
-            id: $id
+    query getArticleComments (
+        $articleId: ID!
+    ){
+        comments(
+            where:{
+                article:{
+                    id:$articleId
+                }
+            }
         ) {
             content
         }
     }
-`
+`;
+
 
 export const CREATE_ARTICLE = gql`
     mutation createArticle ($input: createArticleInput) {
